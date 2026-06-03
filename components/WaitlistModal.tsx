@@ -238,9 +238,10 @@ export function WaitlistModal() {
             <h3 className="mt-5 text-2xl font-bold text-ink-900">
               Join the waitlist
             </h3>
-            <p className="mt-2 text-sm text-ink-400">
-              Get early access, locked-in pricing, and a say in what we build
-              next.
+            <p className="mt-2 text-sm leading-relaxed text-ink-400">
+              Join the waitlist for early access, beta pricing, and provider
+              tools designed to simplify documentation, scheduling,
+              compliance, and communication.
             </p>
 
             <form onSubmit={submit} className="mt-6 space-y-4">

@@ -29,9 +29,10 @@ export function WaitlistCTA() {
         <h2 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tighter2 text-ink-900 md:text-[64px]">
           Get Grandfathered In
         </h2>
-        <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-ink-400">
-          Early adopters receive priority access to new features, locked-in
-          pricing, and early influence on product development.
+        <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-ink-400">
+          Join the waitlist for early access, beta pricing, and provider tools
+          designed to simplify documentation, scheduling, compliance, and
+          communication.
         </p>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
