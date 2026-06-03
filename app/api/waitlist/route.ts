@@ -56,14 +56,46 @@ type Payload = {
   message?: string;
 };
 
-function row(label: string, value: string | undefined) {
-  const display = value && value.trim() ? escapeHtml(value.trim()) : "—";
+function row(
+  label: string,
+  value: string | undefined,
+  opts?: { rawHtml?: boolean }
+) {
+  let display: string;
+  if (!value || !value.trim()) {
+    display = "—";
+  } else if (opts?.rawHtml) {
+    display = value; // caller is responsible for safety
+  } else {
+    display = escapeHtml(value.trim());
+  }
   return `
     <tr>
       <td style="padding:10px 0;color:#646768;border-top:1px solid #e4e4e7;width:200px;vertical-align:top;font-size:13px;">${escapeHtml(label)}</td>
       <td style="padding:10px 0;border-top:1px solid #e4e4e7;font-weight:600;font-size:14px;color:#101111;">${display}</td>
     </tr>
   `;
+}
+
+function formatDate(iso: string) {
+  // e.g. "June 3, 2026 at 10:03 PM UTC"
+  try {
+    const d = new Date(iso);
+    const date = d.toLocaleDateString("en-US", {
+      timeZone: "UTC",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const time = d.toLocaleTimeString("en-US", {
+      timeZone: "UTC",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `${date} at ${time} UTC`;
+  } catch {
+    return iso;
+  }
 }
 
 async function sendNotification(opts: {
@@ -91,7 +123,8 @@ async function sendNotification(opts: {
           "Email",
           data.email
             ? `<a href="mailto:${escapeHtml(data.email)}" style="color:#0099a8;text-decoration:none;">${escapeHtml(data.email)}</a>`
-            : undefined
+            : undefined,
+          { rawHtml: true }
         )}
         ${row("Phone", data.phone)}
         ${row("Agency / Company", data.company)}
@@ -101,7 +134,7 @@ async function sendNotification(opts: {
         ${row("Biggest challenge", data.challenge)}
         ${row("Interested in", interestsList)}
         ${row("Message", data.message)}
-        ${row("Submitted at", submittedAt)}
+        ${row("Submitted at", formatDate(submittedAt))}
       </table>
       <p style="margin-top:28px;font-size:12px;color:#878b8c;">Sent automatically from your Providocs landing page.</p>
     </div>
@@ -121,7 +154,7 @@ async function sendNotification(opts: {
     `Biggest challenge: ${data.challenge || "—"}`,
     `Interested in: ${interestsList || "—"}`,
     `Message: ${data.message || "—"}`,
-    `Submitted: ${submittedAt}`,
+    `Submitted: ${formatDate(submittedAt)}`,
   ].join("\n");
 
   return fetch(`${BREVO_BASE}/smtp/email`, {
